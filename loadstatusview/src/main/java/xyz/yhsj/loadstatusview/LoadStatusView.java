@@ -6,10 +6,12 @@ import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,6 +21,7 @@ import xyz.yhsj.loadstatusview.listener.OnStatusPageClickListener;
 
 public class LoadStatusView extends FrameLayout {
 
+    public static final String TAG = "LoadStatusView";
 
     public static final int VIEW_STATE_CONTENT = 0;
 
@@ -27,6 +30,10 @@ public class LoadStatusView extends FrameLayout {
     public static final int VIEW_STATE_EMPTY = 2;
 
     public static final int VIEW_STATE_LOADING = 3;
+
+    private TextView tv_error;
+    private TextView tv_empty;
+    private TextView tv_loading;
 
 
     @Retention(RetentionPolicy.SOURCE)
@@ -78,6 +85,7 @@ public class LoadStatusView extends FrameLayout {
             addView(mLoadingView, mLoadingView.getLayoutParams());
         } else {
             mLoadingView = mInflater.inflate(R.layout.loading, this, false);
+            tv_loading = (TextView) mLoadingView.findViewById(R.id.message_info);
             addView(mLoadingView, mLoadingView.getLayoutParams());
             bindEvent(mLoadingView);
         }
@@ -88,6 +96,7 @@ public class LoadStatusView extends FrameLayout {
             addView(mEmptyView, mEmptyView.getLayoutParams());
         } else {
             mEmptyView = mInflater.inflate(R.layout.empty, this, false);
+            tv_empty = (TextView) mEmptyView.findViewById(R.id.message_info);
             addView(mEmptyView, mEmptyView.getLayoutParams());
             bindEvent(mEmptyView);
         }
@@ -98,6 +107,7 @@ public class LoadStatusView extends FrameLayout {
             addView(mErrorView, mErrorView.getLayoutParams());
         } else {
             mErrorView = mInflater.inflate(R.layout.error, this, false);
+            tv_error = (TextView) mErrorView.findViewById(R.id.message_info);
             addView(mErrorView, mErrorView.getLayoutParams());
             bindEvent(mErrorView);
         }
@@ -259,8 +269,45 @@ public class LoadStatusView extends FrameLayout {
      * @param state
      */
     public void setViewState(@ViewState int state) {
+        setViewState(state, null);
+    }
+
+    /**
+     * 设置视图状态
+     *
+     * @param state
+     */
+    public void setViewState(@ViewState int state, String msg) {
         if (state != mViewState) {
             mViewState = state;
+
+            switch (mViewState) {
+                case VIEW_STATE_LOADING:
+
+                    if (tv_loading != null && msg != null) {
+                        tv_loading.setText(msg);
+                    } else {
+                        Log.e("TAG", "only default view can set message");
+                    }
+                    break;
+
+                case VIEW_STATE_EMPTY:
+                    if (tv_empty != null && msg != null) {
+                        tv_empty.setText(msg);
+                    } else {
+                        Log.e("TAG", "only default view can set message");
+                    }
+                    break;
+
+                case VIEW_STATE_ERROR:
+                    if (tv_error != null && msg != null) {
+                        tv_error.setText(msg);
+                    } else {
+                        Log.e("TAG", "only default view can set message");
+                    }
+                    break;
+            }
+
             setView();
         }
     }

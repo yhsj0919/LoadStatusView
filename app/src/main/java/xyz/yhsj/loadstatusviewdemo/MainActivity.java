@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         loadStatusView.setOnStatusPageClickListener(new OnStatusPageClickListener() {
             @Override
             public void onError() {
-                loadStatusView.setViewState(LoadStatusView.VIEW_STATE_EMPTY);
+                loadStatusView.setViewState(LoadStatusView.VIEW_STATE_EMPTY,"我改变了提示");
             }
 
             @Override
